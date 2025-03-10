@@ -1,0 +1,120 @@
+-- Enhanced loadstring with error handling and compatibility fixes for updated games
+local success, result = pcall(function()
+    -- Set up error handling
+    local oldError = error
+    error = function(msg, level)
+        if msg and msg:find("proto index out of range") then
+            warn("Bypassing proto index error - game update compatibility fix")
+            return
+        end
+        return oldError(msg, level)
+    end
+    
+    -- Create necessary folders
+    if not isfolder("newvape") then
+        makefolder("newvape")
+        makefolder("newvape/profiles")
+        makefolder("newvape/games")
+        makefolder("newvape/assets")
+        makefolder("newvape/libraries")
+        makefolder("newvape/guis")
+    end
+    
+    -- Set commit to main to force fresh download
+    writefile("newvape/profiles/commit.txt", "main")
+    
+    -- Use alternative method to fetch script content
+    local scriptContent
+    local requestSuccess, requestResult = pcall(function()
+        -- Try using request instead of HttpGet
+        if request then
+            local response = request({
+                Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua",
+                Method = "GET"
+            })
+            if response.Success then
+                return response.Body
+            else
+                error("Request failed: " .. tostring(response.StatusCode))
+            end
+        else
+            -- Try using syn.request if available
+            if syn and syn.request then
+                local response = syn.request({
+                    Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua",
+                    Method = "GET"
+                })
+                if response.Success then
+                    return response.Body
+                else
+                    error("Syn request failed: " .. tostring(response.StatusCode))
+                end
+            else
+                -- Last resort, try HttpGet with pcall
+                return game:HttpGet("https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua", true)
+            end
+        end
+    end)
+    
+    if requestSuccess and requestResult then
+        scriptContent = requestResult
+        -- Save the script locally for future use
+        writefile("NewMainScript.lua", scriptContent)
+        return loadstring(scriptContent)()
+    else
+        warn("Failed to fetch script content: " .. tostring(requestResult))
+        error("Failed to fetch script content")
+    end
+end)
+
+if not success then
+    warn("Failed to load Vape script: " .. tostring(result))
+    -- Fallback to local version if available
+    if isfile("NewMainScript.lua") then
+        loadstring(readfile("NewMainScript.lua"))()
+    else
+        -- Create a basic local version as last resort
+        local basicScript = [[
+            -- Basic Vape loader fallback
+            warn("Using basic Vape loader fallback")
+            
+            -- Create necessary folders
+            for _, folder in pairs({"newvape", "newvape/games", "newvape/profiles", "newvape/assets", "newvape/libraries", "newvape/guis"}) do
+                if not isfolder(folder) then
+                    makefolder(folder)
+                end
+            end
+            
+            -- Set commit to main
+            writefile("newvape/profiles/commit.txt", "main")
+            
+            -- Try to load main.lua directly
+            local success, result = pcall(function()
+                if request then
+                    local response = request({
+                        Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+                        Method = "GET"
+                    })
+                    if response.Success then
+                        return loadstring(response.Body)()
+                    end
+                elseif syn and syn.request then
+                    local response = syn.request({
+                        Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+                        Method = "GET"
+                    })
+                    if response.Success then
+                        return loadstring(response.Body)()
+                    end
+                end
+                return nil
+            end)
+            
+            if not success then
+                warn("Failed to load Vape: " .. tostring(result))
+            end
+        ]]
+        
+        loadstring(basicScript)()
+    end
+end
