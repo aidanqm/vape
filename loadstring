@@ -29,7 +29,7 @@ local success, result = pcall(function()
         -- Try using request instead of HttpGet
         if request then
             local response = request({
-                Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua",
+                Url = "https://raw.githubusercontent.com/aidanqm/vape/main/NewMainScript.lua",
                 Method = "GET"
             })
             if response.Success then
@@ -41,7 +41,7 @@ local success, result = pcall(function()
             -- Try using syn.request if available
             if syn and syn.request then
                 local response = syn.request({
-                    Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua",
+                    Url = "https://raw.githubusercontent.com/aidanqm/vape/main/NewMainScript.lua",
                     Method = "GET"
                 })
                 if response.Success then
@@ -51,7 +51,7 @@ local success, result = pcall(function()
                 end
             else
                 -- Last resort, try HttpGet with pcall
-                return game:HttpGet("https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/NewMainScript.lua", true)
+                return game:HttpGet("https://raw.githubusercontent.com/aidanqm/vape/main/NewMainScript.lua", true)
             end
         end
     end)
@@ -92,7 +92,7 @@ if not success then
             local success, result = pcall(function()
                 if request then
                     local response = request({
-                        Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+                        Url = "https://raw.githubusercontent.com/aidanqm/vape/main/main.lua",
                         Method = "GET"
                     })
                     if response.Success then
@@ -100,7 +100,7 @@ if not success then
                     end
                 elseif syn and syn.request then
                     local response = syn.request({
-                        Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+                        Url = "https://raw.githubusercontent.com/aidanqm/vape/main/main.lua",
                         Method = "GET"
                     })
                     if response.Success then

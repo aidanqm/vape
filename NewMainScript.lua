@@ -11,7 +11,7 @@ end
 local function downloadFile(path, func)
 	if not isfile(path) then
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/aidanqm/vape/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -77,7 +77,7 @@ end
 local success, result = pcall(function()
 	if request then
 		local response = request({
-			Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+			Url = "https://raw.githubusercontent.com/aidanqm/vape/main/main.lua",
 			Method = "GET"
 		})
 		if response.Success then
@@ -86,7 +86,7 @@ local success, result = pcall(function()
 		end
 	elseif syn and syn.request then
 		local response = syn.request({
-			Url = "https://raw.githubusercontent.com/NTDCore/VapeV4ForRoblox/main/main.lua",
+			Url = "https://raw.githubusercontent.com/aidanqm/vape/main/main.lua",
 			Method = "GET"
 		})
 		if response.Success then
